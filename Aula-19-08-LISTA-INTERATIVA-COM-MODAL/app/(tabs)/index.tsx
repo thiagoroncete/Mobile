@@ -40,6 +40,10 @@ export default function App() {
       setImagem("");
       setModalVisible(false);
     }
+
+  };
+   const fecharModal = () => {
+      setModalVisible(false);
   };
 
   const renderItem = ({ item }: { item: Item }) => (
@@ -80,24 +84,30 @@ export default function App() {
             <TextInput
               style={styles.input}
               placeholder="Título"
+              placeholderTextColor= "#000"
               value={titulo}
               onChangeText={setTitulo}
             />
             <TextInput
               style={styles.input}
               placeholder="Descrição"
+              placeholderTextColor= "#000"
               value={descricao}
               onChangeText={setDescricao}
             />
             <TextInput
               style={styles.input}
               placeholder="URL da imagem"
+              placeholderTextColor= "#000"
               value={imagem}
               onChangeText={setImagem}
             />
 
             <TouchableOpacity style={styles.botaoConfirmar} onPress={adicionarItem}>
               <Text style={styles.textoBotao}>Adicionar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.botaoCancelar} onPress={fecharModal}>
+              <Text style={styles.textoBotao}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -152,6 +162,12 @@ const styles = StyleSheet.create({
   },
   botaoConfirmar: {
     backgroundColor: "#28a745",
+    padding: 14,
+    borderRadius: 6,
+    alignItems: "center",
+  },
+  botaoCancelar: {
+    backgroundColor: "#ff0000ff",
     padding: 14,
     borderRadius: 6,
     alignItems: "center",
