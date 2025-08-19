@@ -1,76 +1,159 @@
 import React, { useState } from "react";
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Image,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+interface Item {
+  id: string;
+  titulo: string;
+  descricao: string;
+  imagem: string;
+}
 
-export default function HomeScreen() {
+export default function App() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [titulo, setTitulo] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [imagem, setImagem] = useState("");
+
+  const adicionarItem = () => {
+    if (titulo.trim() && descricao.trim() && imagem.trim()) {
+      const novoItem: Item = {
+        id: Date.now().toString(),
+        titulo,
+        descricao,
+        imagem,
+      };
+      setItems([...items, novoItem]);
+      setTitulo("");
+      setDescricao("");
+      setImagem("");
+      setModalVisible(false);
+    }
+  };
+
+  const renderItem = ({ item }: { item: Item }) => (
+    <View style={styles.item}>
+      <Text style={styles.titulo}>{item.titulo}</Text>
+      <Text style={styles.descricao}>{item.descricao}</Text>
+      {item.imagem ? (
+        <Image source={{ uri: item.imagem }} style={styles.imagem} />
+      ) : null}
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.lista}
+      />
+
+      <TouchableOpacity
+        style={styles.botaoAdicionar}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textoBotao}>Adicionar item</Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalConteudo}>
+            <Text style={styles.modalTitulo}>Novo Item</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Título"
+              value={titulo}
+              onChangeText={setTitulo}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Descrição"
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="URL da imagem"
+              value={imagem}
+              onChangeText={setImagem}
+            />
+
+            <TouchableOpacity style={styles.botaoConfirmar} onPress={adicionarItem}>
+              <Text style={styles.textoBotao}>Adicionar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { flex: 1, backgroundColor: "#f5f5f5" },
+  lista: { padding: 16 },
+  item: {
+    backgroundColor: "#fff",
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    elevation: 2,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  titulo: { fontSize: 18, fontWeight: "bold", marginBottom: 4 },
+  descricao: { fontSize: 14, color: "#555", marginBottom: 6 },
+  imagem: { width: "100%", height: 150, borderRadius: 8 },
+  botaoAdicionar: {
+    backgroundColor: "#007BFF",
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  textoBotao: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 20,
+  },
+  modalConteudo: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalTitulo: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginBottom: 12,
+    borderRadius: 6,
+  },
+  botaoConfirmar: {
+    backgroundColor: "#28a745",
+    padding: 14,
+    borderRadius: 6,
+    alignItems: "center",
   },
 });
