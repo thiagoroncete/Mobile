@@ -1,5 +1,6 @@
 import React from 'react';
-import { FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native';
+import { Card, List } from 'react-native-paper';
 import { Item } from '../models/ItemModel';
 
 interface Props {
@@ -9,9 +10,19 @@ interface Props {
 
 export const ItemListView: React.FC<Props> = ({ items, onItemPress }) => {
   const renderItem = ({ item }: { item: Item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => onItemPress(item)}>
-      <Text>{item.title}</Text>
-    </TouchableOpacity>
+    <Card
+      style={{
+        marginBottom: 10,
+        backgroundColor: '#e3f2fd'
+      }}
+      onPress={() => onItemPress(item)}
+    >
+      <List.Item
+        title={item.title}
+        titleStyle={{ color: '#2e7d32' }} // 🟢 texto verde
+        left={props => <List.Icon {...props} icon="folder" />}
+      />
+    </Card>
   );
 
   return (
@@ -22,11 +33,3 @@ export const ItemListView: React.FC<Props> = ({ items, onItemPress }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  item: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-});

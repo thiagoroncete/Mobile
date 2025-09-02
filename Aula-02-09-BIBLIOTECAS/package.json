@@ -15,7 +15,9 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-native": "0.79.6",
-    "react-native-web": "^0.20.0"
+    "react-native-paper": "^5.14.5",
+    "react-native-web": "^0.20.0",
+    "expo-camera": "~16.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
