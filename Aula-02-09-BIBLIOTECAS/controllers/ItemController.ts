@@ -12,14 +12,14 @@ export class ItemController {
     return this.service.getItems();
   }
 
-  addItem(title: string): Item | null {
+  addItem(title: string, imageUri?: string): Item | null {
     if (!title.trim()) return null;
-    return this.service.addItem(title.trim());
+    return this.service.addItem(title.trim(), imageUri);
   }
 
-  updateItem(id: string, title: string): Item | null {
+  updateItem(id: string, title: string, imageUri?: string): Item | null {
     if (!title.trim()) return null;
-    return this.service.updateItem(id, title.trim());
+    return this.service.updateItem(id, title.trim(), imageUri);
   }
 
   deleteItem(id: string): boolean {

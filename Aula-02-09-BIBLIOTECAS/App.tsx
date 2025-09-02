@@ -36,10 +36,30 @@ export default function App() {
     closeModal();
   };
 
-  const handleDelete = () => {
-    if (editingItem) controller.deleteItem(editingItem.id);
+  const handleSaveWithImage = (imageUri?: string) => {
+    let result;
+    if (editingItem) {
+      result = controller.updateItem(editingItem.id, inputText, imageUri);
+      if (!result) return Alert.alert('Erro', 'Digite um título');
+    } else {
+      result = controller.addItem(inputText, imageUri);
+      if (!result) return Alert.alert('Erro', 'Digite um título');
+    }
     setItems(controller.getItems());
     closeModal();
+  };
+
+  const handleDelete = () => {
+    if (editingItem) {
+      const success = controller.deleteItem(editingItem.id);
+      if (success) {
+        setItems(controller.getItems());
+        closeModal();
+        Alert.alert('Sucesso', 'Item excluído com sucesso!');
+      } else {
+        Alert.alert('Erro', 'Não foi possível excluir o item');
+      }
+    }
   };
 
   const handlePhotoTaken = (uri: string) => {
@@ -71,7 +91,7 @@ export default function App() {
           inputText={inputText}
           onChangeText={setInputText}
           onClose={closeModal}
-          onSave={handleSave}
+          onSave={handleSaveWithImage}
           onDelete={editingItem ? handleDelete : undefined}
         />
 
@@ -102,8 +122,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 30,
     padding: 10,
-    elevation: 5, // sombra Android
-    shadowColor: '#000', // sombra iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,

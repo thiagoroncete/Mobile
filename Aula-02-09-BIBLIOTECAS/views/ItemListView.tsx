@@ -1,6 +1,5 @@
 import React from 'react';
-import { FlatList } from 'react-native';
-import { Card, List } from 'react-native-paper';
+import { FlatList, TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 import { Item } from '../models/ItemModel';
 
 interface Props {
@@ -10,19 +9,17 @@ interface Props {
 
 export const ItemListView: React.FC<Props> = ({ items, onItemPress }) => {
   const renderItem = ({ item }: { item: Item }) => (
-    <Card
-      style={{
-        marginBottom: 10,
-        backgroundColor: '#e3f2fd'
-      }}
-      onPress={() => onItemPress(item)}
-    >
-      <List.Item
-        title={item.title}
-        titleStyle={{ color: '#2e7d32' }} // 🟢 texto verde
-        left={props => <List.Icon {...props} icon="folder" />}
-      />
-    </Card>
+    <TouchableOpacity style={styles.item} onPress={() => onItemPress(item)}>
+      {item.imageUri && (
+        <Image source={{ uri: item.imageUri }} style={styles.itemImage} />
+      )}
+      <View style={styles.itemContent}>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+        {!item.imageUri && (
+          <Text style={styles.noImageText}>Sem imagem</Text>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -33,3 +30,42 @@ export const ItemListView: React.FC<Props> = ({ items, onItemPress }) => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  item: {
+    padding: 15,
+    marginVertical: 4,
+    marginHorizontal: 2,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#6200EE',
+    elevation: 2,
+    shadowColor: '#6200EE',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginRight: 15,
+  },
+  itemContent: {
+    flex: 1,
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  noImageText: {
+    fontSize: 12,
+    color: '#999',
+    fontStyle: 'italic',
+  },
+});
